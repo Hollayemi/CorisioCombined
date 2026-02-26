@@ -1,13 +1,18 @@
-import * as yup from "yup";
+import * as yup from 'yup';
 
 const Step2ValidationSchema = yup.object().shape({
-  fullname: yup.string().required("Full Name Name is Required"),
-  username: yup.string().required("Username is Required"),
+  businessName: yup.string().required('Business name is required'),
+  store: yup.string().required('Store handle is required'),
+  fullname: yup.string().required('Full name is required'),
+  username: yup.string().required('Username is required'),
   email: yup
     .string()
-    .required("Email Address is Required")
-    .email("Please enter valid email"),
- 
+    .required('Email address is required')
+    .email('Please enter a valid email'),
+  password: yup
+    .string()
+    .required('Password is required')
+    .min(8, 'Password must be at least 8 characters'),
 });
 
 export default Step2ValidationSchema;
