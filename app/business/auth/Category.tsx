@@ -19,11 +19,11 @@ export default function CategorySelectionScreen() {
     return (
         <SafeAreaView className="bg-white flex-1 dark:bg-gray-900">
             <ProgressHeader
-                currentStep={5}
+                currentStep={1} totalSteps={4}
             />
             <PageHeader
-                title="Set the Stage for Your Store"
-                subtitle="Choose your category and subcategory, let’s make you discoverable!"
+                title="Choose store categories"
+                subtitle="Start with what you sell so Corisio can place your store in the right discovery lanes."
             />
 
             <View className="flex-1 h-full">
