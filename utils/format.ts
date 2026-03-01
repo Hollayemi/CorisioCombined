@@ -143,3 +143,10 @@ export function summarizeHours(hours: any) {
 
     return `Open: ${openDays.join(", ")} (${interval}). \nClosed: ${closedDays.join(", ")}.`;
 }
+
+export const normalisePhone = (raw: string): string => {
+    const digits = raw.replace(/\D/g, "");
+    if (digits.startsWith("234")) return `+${digits}`;
+    if (digits.startsWith("0")) return `+234${digits.slice(1)}`;
+    return `+234${digits}`;
+};

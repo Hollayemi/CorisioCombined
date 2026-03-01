@@ -2,7 +2,7 @@ import Button from "@/components/form/Button";
 import { PasswordRequirements, SecureInputField } from "@/components/form/storeTextInputs";
 import ProgressHeader from "@/components/wrapper/business/headers/authHeader";
 import toaster from "@/config/toaster";
-import { useCreateNewStoreMutation } from "@/redux/business/slices/authSlice";
+import { useCreateNewStoreMutation } from "@/redux/business/slices/authSlices";
 import { router, useLocalSearchParams } from "expo-router";
 import { Formik } from "formik";
 import { useState } from "react";

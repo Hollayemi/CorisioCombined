@@ -17,8 +17,8 @@ const requestHeaders: Record<string, string> = {
     }
 })();
 
-let server = "https://corislo-backend.onrender.com/api/v1/";
-// let server = "http://172.20.10.8:5001";
+// let server = "https://corislo-backend.onrender.com/api/v1/";
+let server = "http://172.20.10.8:5000";
 if (process.env.NODE_ENV === "production") {
     console.log("in production");
     server = "https://corislo-backend.onrender.com";

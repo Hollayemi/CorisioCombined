@@ -1,4 +1,4 @@
-import { Days, SocialMedia, StoreDataTypes } from "@/app/home/settings";
+
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "./api/axiosBaseQuery";
 
@@ -89,7 +89,7 @@ export const growthApi = createApi({
 
         getFeaturedCategories: builder.query<ApiResponse, string | boolean | void>({
             query: (for_store) => ({
-                url: `/corisio/category/thread?for_store=${for_store ? "true" : "false"}`,
+                url: `/configure/categories/thread?for_store=${for_store ? "true" : "false"}`,
                 method: "GET",
                 forceRefetch: ({
                     currentArg,

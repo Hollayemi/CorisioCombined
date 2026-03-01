@@ -1,6 +1,6 @@
 import Button from '@/components/form/Button';
 import { PasswordRequirements, SecureInputField } from '@/components/form/TextInput';
-import { logoutUser, useResetPasswordMutation } from '@/redux/business/slices/authSlice';
+import { logoutUser, useResetPasswordMutation } from '@/redux/business/slices/authSlices';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Formik } from 'formik';
 import React from 'react';

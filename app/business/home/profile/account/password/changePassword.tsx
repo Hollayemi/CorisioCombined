@@ -2,7 +2,7 @@
 import Button from '@/components/form/Button';
 import ModalComponent from '@/components/modal';
 import StoreWrapper from '@/components/wrapper/business';
-import { logoutUser, useChangePasswordMutation } from '@/redux/business/slices/authSlice';
+import { logoutUser, useChangePasswordMutation } from '@/redux/business/slices/authSlices';
 import { EyeClosed, EyeIcon } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';

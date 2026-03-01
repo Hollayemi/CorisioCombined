@@ -2,7 +2,7 @@
 import ModalComponent from '@/components/modal';
 import StoreWrapper from '@/components/wrapper/business';
 import { useStoreData } from '@/hooks/useData';
-import { logoutUser } from '@/redux/business/slices/authSlice';
+import { logoutUser } from '@/redux/business/slices/authSlices';
 import { router } from 'expo-router';
 import { ChevronRightIcon } from 'lucide-react-native';
 import React, { useState } from 'react';

@@ -118,7 +118,7 @@ export const staffApi = createApi({
         // Authentication & Profile
         getLoggedInStaff: builder.query<ApiResponse<Staff>, void>({
             query: () => ({
-                url: '/branch/logged-in-staff',
+                url: '/stores/me',
                 method: 'GET',
             }),
             providesTags: ['LoggedInStaff'],

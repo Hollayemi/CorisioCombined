@@ -1,16 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-
-import authReducer, { authApi } from "./slices/authSlice";
+import authReducer, { authApi } from "./slices/authSlices";
 import { branchApi } from './slices/branchSlice';
 import { campaignsDashboardApi } from './slices/campaignSlice';
 import { chatApi } from './slices/chatSlice';
-import { productApi } from "./slices/productSlice";
 import { growthApi } from './slices/growthSlice';
 import { ordersCustomersApi } from './slices/orderSlice';
+import { productApi } from "./slices/productSlice";
 import { referralApi } from "./slices/referralSlice";
 import { staffApi } from './slices/staffSlice';
 import { storeApi } from './slices/storeSlice';
+import { storeInfoApi } from './slices/storeInfoSlice';
 import { paymentApi } from "./slices/transaction";
 
 export const store = configureStore({
@@ -20,6 +20,7 @@ export const store = configureStore({
         [staffApi.reducerPath]: staffApi.reducer,
         [productApi.reducerPath]: productApi.reducer,
         [storeApi.reducerPath]: storeApi.reducer,
+        [storeInfoApi.reducerPath]: storeInfoApi.reducer,
         [growthApi.reducerPath]: growthApi.reducer,
         [branchApi.reducerPath]: branchApi.reducer,
         [chatApi.reducerPath]: chatApi.reducer,
@@ -34,6 +35,7 @@ export const store = configureStore({
             .concat(staffApi.middleware)
             .concat(productApi.middleware)
             .concat(storeApi.middleware)
+            .concat(storeInfoApi.middleware)
             .concat(growthApi.middleware)
             .concat(branchApi.middleware)
             .concat(chatApi.middleware)

@@ -9,7 +9,7 @@ import 'react-native-reanimated';
 // Import global CSS file
 import "../global.css";
 
-import { ChatDataProvider } from '@/context/chatContext';
+// import { ChatDataProvider } from '@/context/chatContext';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -137,7 +137,7 @@ function RootLayout() {
                         padding: 0,
                     }}
                 />
-                <ChatDataProvider>
+                {/* <ChatDataProvider> */}
                     <Stack>
                         <Stack.Screen name="(welcome)" options={{ headerShown: false }} />
                         <Stack.Screen name="user" options={{ headerShown: false }} />
@@ -146,7 +146,7 @@ function RootLayout() {
                         <Stack.Screen name="+not-found" />
                     </Stack>
                     <StatusBar style="auto" />
-                </ChatDataProvider>
+                {/* </ChatDataProvider> */}
             </ThemeProvider>
         </View>
     );

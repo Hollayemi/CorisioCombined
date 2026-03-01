@@ -1,6 +1,6 @@
 import Button from '@/components/form/Button';
 import InputField from '@/components/form/TextInput';
-import { useForgotPasswordMutation } from '@/redux/business/slices/authSlice';
+import { useForgotPasswordMutation } from '@/redux/business/slices/authSlices';
 import { router } from 'expo-router';
 import { Formik } from 'formik';
 import React from 'react';

@@ -1,7 +1,5 @@
-import { useGetBusinessNotificationsQuery } from "@/redux/business/slices/campaignSlice";
-import { useGetAgentInfoQuery } from "@/redux/business/slices/referralSlice";
-import { useGetLoggedInStaffQuery } from "@/redux/business/slices/staffSlice";
-import { useGetStoreDetailsQuery } from "@/redux/business/slices/storeSlice";
+import { useGetMyReferralCodeQuery } from "@/redux/business/slices/referralSlice";
+import { useGetMyStoreQuery } from "@/redux/business/slices/storeInfoSlice";
 import { router } from "expo-router";
 import React, { createContext, useEffect, useState } from "react";
 import { Dimensions, View } from "react-native";
@@ -12,14 +10,12 @@ interface StoreDataProviderProps {
 
 
 interface StoreDataContextType {
-    staffInfo: any;
     storeInfo: any;
     referral: any;
     selectedAddress: any;
     notifications: any[];
     screenWidth: number;
     showOverlay: (pageName: string | null) => void;
-    refetchStaff: any;
     refetchStore: any,
     refetchReferral: any;
 
@@ -27,16 +23,13 @@ interface StoreDataContextType {
     // loading
     referralLoading: boolean;
     storeIsLoading: boolean;
-    staffIsLoading: boolean,
 }
 
 const defaultProvider: StoreDataContextType = {
-    staffInfo: {},
     storeInfo: {},
     referral: {},
     selectedAddress: {},
     showOverlay: () => { },
-    refetchStaff: () => { },
     refetchStore: () => { },
     refetchReferral: () => { },
     notifications: [],
@@ -45,7 +38,6 @@ const defaultProvider: StoreDataContextType = {
     // loading
     referralLoading: false,
     storeIsLoading: false,
-    staffIsLoading: false,
 };
 
 const StoreDataContext = createContext<StoreDataContextType>(defaultProvider);
@@ -79,26 +71,17 @@ const StoreDataProvider: React.FC<StoreDataProviderProps> = ({ children }) => {
     };
 
 
-    const {
-        data: notif,
-        error: notifErr,
-        isLoading: notifIsLoading,
-    } = useGetBusinessNotificationsQuery({});
+    // const {
+    //     data: notif,
+    //     error: notifErr,
+    //     isLoading: notifIsLoading,
+    // } = useGetBusinessNotificationsQuery({});
 
-    const loadNotif = (!notifErr && !notifIsLoading && notif?.data) || [];
+    const loadNotif = {} //(!notifErr && !notifIsLoading && notif?.data) || [];
 
-    useEffect(() => {
-        setNotifications(loadNotif);
-    }, [notif]);
-
-    // Fetch staffInfo
-    const {
-        data: staffInfo,
-        error: staffErr,
-        isLoading: staffIsLoading,
-        refetch: refetchStaff
-    } = useGetLoggedInStaffQuery();
-
+    // useEffect(() => {
+    //     setNotifications(loadNotif);
+    // }, [notif]);
 
     // Fetch storeInfo
     const {
@@ -106,21 +89,21 @@ const StoreDataProvider: React.FC<StoreDataProviderProps> = ({ children }) => {
         error: storeErr,
         isLoading: storeIsLoading,
         refetch: refetchStore,
-    } = useGetStoreDetailsQuery({});
+    } = useGetMyStoreQuery();
 
     const {
         data: referralData,
         refetch: refetchReferral,
         isLoading: referralLoading
-    } = useGetAgentInfoQuery()
+    } = useGetMyReferralCodeQuery()
+
     const referral = referralData?.data || {}
 
-    const staffData = (!staffErr && !staffIsLoading && staffInfo?.data) || {} as any;
-    useEffect(() => {
-        if (staffData.coordinates && staffData.coordinates[0] === 0) {
-            router.push({ pathname: "/business/auth/map", params: { type: 'redirect', from: "/home" } })
-        }
-    }, [staffData.coordinates]);
+    // useEffect(() => {
+    //     if (staffData.coordinates && staffData.coordinates[0] === 0) {
+    //         router.push({ pathname: "/business/auth/map", params: { type: 'redirect', from: "/home" } })
+    //     }
+    // }, [staffData.coordinates]);
 
 
     return (
@@ -129,19 +112,16 @@ const StoreDataProvider: React.FC<StoreDataProviderProps> = ({ children }) => {
         >
             <StoreDataContext.Provider
                 value={{
-                    staffInfo: staffData,
                     storeInfo:
                         (!storeErr && !storeIsLoading && storeInfo?.data) || {},
                     selectedAddress: {},
                     referral,
                     notifications,
                     screenWidth,
-                    refetchStaff,
                     refetchStore,
                     refetchReferral,
                     showOverlay,
 
-                    staffIsLoading,
                     referralLoading,
                     storeIsLoading,
                 }}

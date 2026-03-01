@@ -1,3 +1,4 @@
+import { server } from "@/config/server";
 import toaster from "@/config/toaster";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
@@ -6,7 +7,6 @@ import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import { router } from "expo-router";
 import { jwtDecode } from "jwt-decode";
 import { jsonHeader } from "./setAuthHeaders";
-import { server } from "@/config/server";
 
 // Define error types for better type safety
 export enum ErrorType {
@@ -64,8 +64,7 @@ const navigateToErrorPage = async (errorType: ErrorType) => {
                 pathname: "/broken",
                 params: { errorType: "network" },
             });
-
-            break;
+        break;
         case ErrorType.SERVER_ERROR:
             router.push({
                 pathname: "/broken",
@@ -230,7 +229,7 @@ export const axiosBaseQuery =
             data,
             params,
             headers,
-            authType = "store",
+            authType = "store_token",
             skipErrorHandling = false,
             retryCount = 0,
         }) => {

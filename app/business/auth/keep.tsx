@@ -1,7 +1,7 @@
 // Screen 1: Complete Registration
 import Button from '@/components/form/Button';
 import InputField, { SecureInputField } from '@/components/form/TextInput';
-import { useStoreLoginMutation } from '@/redux/business/slices/authSlice';
+import { useStoreLoginMutation } from '@/redux/business/slices/authSlices';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, Text, View } from 'react-native';

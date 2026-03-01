@@ -1,7 +1,7 @@
 import Button from '@/components/form/Button';
 import InputField, { SecureInputField } from '@/components/form/storeTextInputs';
 import { useStoreData } from '@/hooks/useData';
-import { useStoreLoginMutation } from '@/redux/business/slices/authSlice';
+import { useStoreLoginMutation } from '@/redux/business/slices/authSlices';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
@@ -14,7 +14,7 @@ import {
     View
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import Pattern from './component';
+import Pattern, { PhoneNumber } from './component';
 
 
 // Social Login Button Component
@@ -41,7 +41,7 @@ interface LoginFormData {
 // Main Login Screen Component
 export const LoginScreen = () => {
     const [storeLogin, { isLoading }] = useStoreLoginMutation();
-    const { refetchStaff, refetchStore } = useStoreData()
+    const { refetchStore } = useStoreData()
     const insets = useSafeAreaInsets();
     const [formData, setFormData] = useState<LoginFormData>({
         store: "",
@@ -90,7 +90,6 @@ export const LoginScreen = () => {
         if (validateForm()) {
             await storeLogin(formData).then((res: any) => {
                 if (res?.data?.type === "success") {
-                    refetchStaff()
                     refetchStore()
                     router.push("/business/home")
                 }
@@ -104,16 +103,6 @@ export const LoginScreen = () => {
 
     const handleFacebookLogin = () => {
         console.log('Facebook login');
-    };
-
-    const handleForgotPassword = () => {
-        // navigation.navigate('ForgotPassword');
-        console.log('Forgot password');
-    };
-
-    const handleRegister = () => {
-        // navigation.navigate('Register');
-        console.log('Navigate to register');
     };
 
     return (
@@ -143,77 +132,16 @@ export const LoginScreen = () => {
                         </View>
 
                         {/* Login Form */}
-                        <View className="bg-white dark:bg-gray-800 rounded-t-3xl p-6 shadow-lg">
-                            <InputField
-                                label="Store Handle"
-                                error={errors.store}
-                                leftPrefix='@'
-                                placeholder="Enter store handle (e.g., @yourstore)"
-                                value={formData.store}
-                                onChangeText={(text: string) => handleInputChange("store", text)}
-                                className="!mb-4"
+                        <View className="bg-white dark:bg-gray-800 rounded-t-3xl py-4 shadow-lg">
+                            <PhoneNumber
+                                pathname="/business/auth/files/PhoneVerify"
+                                data={{ from: "login" }}
                             />
-
-                            <InputField
-                                label="Username"
-                                error={errors.username}
-                                placeholder="Enter Your Username"
-                                value={formData.username}
-                                onChangeText={(text: string) => handleInputChange("username", text)}
-                                className="!mb-4"
-                            />
-                            <SecureInputField
-                                label="Password"
-                                error={errors.password}
-                                placeholder="Enter your password"
-                                value={formData.password}
-                                onChangeText={(text: string) => handleInputChange("password", text)}
-                            />
-                            <TouchableOpacity
-                                onPress={() => router.push('/business/auth/ForgotPassword')}
-                                className="self-end mb-6"
-                            >
-                                <Text className="text-yellow-500 dark:text-white font-medium">
-                                    Forgot your Password?
-                                </Text>
-                            </TouchableOpacity>
-
-                            {/* Login Button */}
-                            <Button
-                                title={isLoading ? "Logging in..." : "Log In"}
-                                onPress={handleLogin}
-                                disabled={isLoading || !!errors.store || !!errors.password || !!errors.username}
-                            />
-
-                            {/* Divider */}
-                            <View className="flex-row items-center mb-6 mt-3">
-                                <View className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
-                                <Text className="mx-4 text-gray-500 dark:text-gray-400 text-sm">
-                                    Or login with
-                                </Text>
-                                <View className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
-                            </View>
-
-                            {/* Social Login Buttons */}
-                            <View className="flex-row !gap-3 mb-6">
-                                <View className="flex-1 mr-3">
-                                    <SocialButton
-                                        icon="logo-google"
-                                        label="Google"
-                                        onPress={handleGoogleLogin}
-                                    />
-                                </View>
-                                <View className="flex-1 ml-3">
-                                    <SocialButton
-                                        icon="logo-facebook"
-                                        label="Facebook"
-                                        onPress={handleFacebookLogin}
-                                    />
-                                </View>
-                            </View>
+                            
+                            
 
                             {/* Register Link */}
-                            <View className="flex-row justify-center">
+                            <View className="flex-row justify-center pt-4">
                                 <Text className="text-gray-600 dark:text-gray-400">
                                     Don't have an account?{' '}
                                 </Text>

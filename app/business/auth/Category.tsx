@@ -30,7 +30,8 @@ export default function CategorySelectionScreen() {
                 <CategorySelector
                     categories={categoryTree}
                     refetch={refetch}
-                    handleNext={() => router.push({ pathname: "/business/auth/Signup1", params: { categories: JSON.stringify(selectedCategories) } })}
+                    // handleNext={() => router.push({ pathname: "/business/auth/Signup1", params: { categories: JSON.stringify(selectedCategories) } })}
+                    handleNext={() => router.push({ pathname: "/business/auth/files/PhoneEntry", params: { categories: JSON.stringify(selectedCategories) } })}
                     isLoading={isLoading}
                     onSelectionChange={setSelectedCategories}
                     initialSelection={selectedCategories}
