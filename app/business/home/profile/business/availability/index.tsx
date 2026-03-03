@@ -16,7 +16,7 @@ export default function Availability() {
 
     const { storeInfo = {}, refetchStore, storeIsLoading } = useStoreData();
     const { profile = {}, business } = storeInfo;
-    const { opening_hours = {} } = profile;
+    const { openingHours = {} } = profile;
 
     const daysOrder = [
         'monday',
@@ -29,7 +29,7 @@ export default function Availability() {
     ];
 
     const schedule: DaySchedule[] = daysOrder.map((day) => {
-        const data = opening_hours[day] || { from: '', to: '', isset: false };
+        const data = openingHours[day] || { from: '', to: '', isset: false };
         return {
             day: day.charAt(0).toUpperCase() + day.slice(1),
             startTime: data.from?.trim() || '--',

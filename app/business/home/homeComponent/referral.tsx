@@ -373,6 +373,14 @@ const ShareModal = ({
 
 // ─── Main export ──────────────────────────────────────────────────────────────
 
+
+export const summaryPills = [
+        { key: 'total'           as const, label: 'Total',       bg: 'bg-gray-100 dark:bg-gray-700',        text: 'text-gray-700 dark:text-gray-200'    },
+        { key: 'validated'       as const, label: 'Validated',   bg: 'bg-green-50 dark:bg-green-900/20',    text: 'text-green-700 dark:text-green-300'   },
+        { key: 'pending'         as const, label: 'Pending',     bg: 'bg-yellow-50 dark:bg-yellow-900/20',  text: 'text-yellow-700 dark:text-yellow-300' },
+        { key: 'profileComplete' as const, label: 'In Progress', bg: 'bg-blue-50 dark:bg-blue-900/20',      text: 'text-blue-700 dark:text-blue-300'     },
+    ];
+
 export default function ReferralScreen({
     shareReferral = false,
     setShare,
@@ -420,12 +428,7 @@ export default function ReferralScreen({
     const tierCfg    = TIER_CONFIG[boostLevel];
     const hasList    = (listInfo?.referrals?.length ?? 0) > 0;
 
-    const summaryPills = [
-        { key: 'total'           as const, label: 'Total',       bg: 'bg-gray-100 dark:bg-gray-700',        text: 'text-gray-700 dark:text-gray-200'    },
-        { key: 'validated'       as const, label: 'Validated',   bg: 'bg-green-50 dark:bg-green-900/20',    text: 'text-green-700 dark:text-green-300'   },
-        { key: 'pending'         as const, label: 'Pending',     bg: 'bg-yellow-50 dark:bg-yellow-900/20',  text: 'text-yellow-700 dark:text-yellow-300' },
-        { key: 'profileComplete' as const, label: 'In Progress', bg: 'bg-blue-50 dark:bg-blue-900/20',      text: 'text-blue-700 dark:text-blue-300'     },
-    ];
+    
 
     return (
         <View className="flex-1">
@@ -532,7 +535,7 @@ export default function ReferralScreen({
                                         <Text className="font-semibold text-gray-700 dark:text-gray-300">
                                             1 verified store
                                         </Text>{' '}
-                                        to unlock Bronze — 30 days of free boosted visibility.
+                                        to unlock Bronze, 30 days of free boosted visibility.
                                     </Text>
                                 )}
                             </View>
@@ -583,28 +586,30 @@ export default function ReferralScreen({
                         )}
 
                         {/* ── Referral list ── */}
-                        {hasList ? (
+                        {hasList && (
                             <View className="bg-white dark:bg-gray-800 rounded-2xl px-4 border border-gray-100 dark:border-gray-700">
                                 {listInfo!.referrals.map((item) => (
                                     <ReferralRow key={item._id} item={item} />
                                 ))}
                             </View>
-                        ) : (
-                            !isLoading && (
-                                <View className="items-center py-10">
-                                    <NoRecord text=" " />
-                                    <Text className="text-gray-500 dark:text-gray-400 text-center mt-2 mb-5 leading-6">
-                                        No referrals yet.{'\n'}Share your code to get started!
-                                    </Text>
-                                    <Button
-                                        size="small"
-                                        title="Share Your Code"
-                                        className="rounded-full w-48"
-                                        onPress={handleNativeShare}
-                                    />
-                                </View>
-                            )
-                        )}
+                        )
+                        // ) : (
+                        //     !isLoading && (
+                        //         <View className="items-center py-10">
+                        //             <NoRecord text=" " />
+                        //             <Text className="text-gray-500 dark:text-gray-400 text-center mt-2 mb-5 leading-6">
+                        //                 No referrals yet.{'\n'}Share your code to get started!
+                        //             </Text>
+                        //             <Button
+                        //                 size="small"
+                        //                 title="Share Your Code"
+                        //                 className="rounded-full w-48"
+                        //                 onPress={handleNativeShare}
+                        //             />
+                        //         </View>
+                        //     )
+                        // )}
+                    }
                     </>
                 )}
             </ScrollView>

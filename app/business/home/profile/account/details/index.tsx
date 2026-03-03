@@ -3,14 +3,14 @@ import Button from '@/components/form/Button';
 import StoreWrapper from '@/components/wrapper/business';
 import { useStoreData } from '@/hooks/useData';
 import useImageUploader from '@/hooks/useStoreImageUploader';
-import { useUpdateStaffDetailsMutation } from '@/redux/business/slices/staffSlice';
+import { useUpdateStoreOwnerProfileMutation } from '@/redux/business/slices/storeInfoSlice';
 import { ImagePlusIcon, User } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { ActivityIndicator, Image, RefreshControl, ScrollView, Text, TextInput, TouchableOpacity, useColorScheme, View } from 'react-native';
 
 interface personalInfo {
-    fullname: string;
-    phone: string;
+    name: string;
+    phoneNumber: string;
     email: string;
 }
 
@@ -46,36 +46,35 @@ const InfoField: React.FC<{ label: string; value: string; field: keyof personalI
 );
 
 const PersonalInformationScreen: React.FC = () => {
-    const { staffInfo, storeInfo, refetchStaff, staffIsLoading }: any = useStoreData();
+    const { storeInfo, refetchStore, storeIsLoading }: any = useStoreData();
     const [profileImage, setProfileImage] = useState([]);
     const { handleUpload, localFiles, uploading } = useImageUploader("staff_image", setProfileImage)
-    const [updateStaffDetails, { isLoading }] = useUpdateStaffDetailsMutation()
-    const { fullname, phone, staffEmail, staffRole, picture } = staffInfo || {};
+    const [updateUserDetails, { isLoading }] = useUpdateStoreOwnerProfileMutation()
+    const { name, phoneNumber, email, staffRole, profile_image } = storeInfo?.user || {};
     const [personalInfo, setpersonalInfo] = useState<personalInfo>({
-        fullname: fullname || '',
-        phone: phone || '',
-        email: staffEmail || '',
+        name: name || '',
+        phoneNumber: phoneNumber || '',
+        email: email || '',
     });
     const [isEditing, setIsEditing] = useState(false);
     const handleSave = () => {
-        updateStaffDetails(personalInfo).then(() => refetchStaff())
+        updateUserDetails(personalInfo).then(() => refetchStore())
         setIsEditing(false);
     };
     const isDark = useColorScheme() === 'dark'
 
     return (
         <StoreWrapper headerTitle="Personal Information" active='profile'>
-            <ScrollView refreshControl={<RefreshControl refreshing={staffIsLoading} onRefresh={refetchStaff} />} className="flex-1 bg-gray-50 dark:bg-gray-900">
+            <ScrollView refreshControl={<RefreshControl refreshing={storeIsLoading} onRefresh={refetchStore} />} className="flex-1 bg-gray-50 dark:bg-gray-900">
                 <View className="p-4">
-                    {/* Profile Picture Section */}
+                    {/* Profile profile_image Section */}
                     <View className="flex-row items-center mb-8">
-
                         <View className="relative">
                             <View className={`w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-700 items-center justify-center overflow-hidden`}>
-                                {picture || profileImage.length ? (
+                                {profile_image || profileImage.length ? (
                                     <Image
                                         source={{
-                                            uri: profileImage[profileImage.length - 1] || picture
+                                            uri: profileImage[profileImage.length - 1] || profile_image
                                         }}
                                         className="w-full h-full "
                                     />
@@ -101,19 +100,19 @@ const PersonalInformationScreen: React.FC = () => {
                     </View>
 
                     {/* Business Information Form */}
-                    <View className="bg-white dark:bg-gray-800 rounded-lg p-4 mb-6">
+                    <View className="bg-white dark:bg-gray-900 rounded-lg p-2 mb-6">
                         <InfoField
                             label="Your Name"
-                            value={personalInfo.fullname}
-                            field="fullname"
+                            value={personalInfo.name}
+                            field="name"
                             setpersonalInfo={setpersonalInfo}
                             isEditing={isEditing}
                         />
 
                         <InfoField
-                            label="Phone Number"
-                            value={personalInfo.phone}
-                            field="phone"
+                            label="phone Number"
+                            value={personalInfo.phoneNumber}
+                            field="phoneNumber"
                             setpersonalInfo={setpersonalInfo}
                             isEditing={isEditing}
                         />
@@ -125,16 +124,6 @@ const PersonalInformationScreen: React.FC = () => {
                             setpersonalInfo={setpersonalInfo}
                             isEditing={isEditing}
                         />
-
-
-                        <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Role
-                        </Text>
-                        <View className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 min-h-[48px] justify-center">
-                            <Text className="text-gray-900 capitalize dark:text-white">
-                                {staffRole?.replaceAll("_", " ")}
-                            </Text>
-                        </View>
                     </View>
 
                     {/* Action Buttons */}

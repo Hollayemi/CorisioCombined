@@ -1,5 +1,5 @@
 import { useUserData } from "@/hooks/useData";
-import { useUpdateUserAccountMutation } from "@/redux/user/slices/userSlice";
+import { useUpdateUserAccountMutation } from "@/redux/user/slices/userSlice2";
 import { router } from "expo-router";
 import React from "react";
 import { Image, Text, View } from "react-native";

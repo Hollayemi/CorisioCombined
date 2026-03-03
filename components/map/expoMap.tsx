@@ -1,6 +1,6 @@
 
 import toaster from "@/config/toaster";
-import { useUpdateBranchLocationMutation } from "@/redux/business/slices/branchSlice";
+import { useUpdateStoreProfileMutation } from "@/redux/business/slices/storeInfoSlice";
 import * as Location from "expo-location";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -41,8 +41,7 @@ const StoreLocationOnboarding = () => {
     const [locationPermission, setLocationPermission] = useState(false);
 
     const router = useRouter()
-    const [updateHandler, { isLoading: updateLoading, isError }] =
-        useUpdateBranchLocationMutation();
+    const [updateHandler, { isLoading: updateLoading, isError }] = useUpdateStoreProfileMutation();
 
     // Request location permissions
     const requestLocationPermission = async () => {
@@ -155,14 +154,17 @@ const StoreLocationOnboarding = () => {
         }
         console.log(selectedLocation)
         const result = await updateHandler({
-            state: selectedLocation.state,
-            // street: selectedLocation.street,
-            city: selectedLocation.city,
-            address: selectedLocation.address,
-            coordinates: [
-                selectedLocation.latitude,
-                selectedLocation.longitude,
-            ],
+            address: {
+                raw: selectedLocation.address,
+                lga: selectedLocation.city,
+                state: selectedLocation.state,
+                ...(selectedLocation && {
+                    coordinates: {
+                        type: "Point",
+                        coordinates: [selectedLocation.latitude, selectedLocation.longitude], // [lng, lat]
+                    },
+                }),
+            },
         }).unwrap();
         toaster(result);
         const jsonParam = JSON.parse(params.data || params || {})

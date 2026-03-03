@@ -37,7 +37,7 @@ const ABUJA_LGAS = [
 // Validation schema
 const ProfileSchema = yup.object().shape({
     storeName: yup.string().max(100, "Max 100 characters").required("Store name is required"),
-    ownerName: yup.string().max(80, "Max 80 characters").required("Owner name is required"),
+    ownerInfo: yup.string().max(80, "Max 80 characters").required("Owner name is required"),
     addressRaw: yup.string().required("Address is required"),
     lga: yup.string().required("LGA is required"),
     description: yup.string().max(500, "Max 500 characters").optional(),
@@ -284,11 +284,11 @@ function SubScreenCard({
 }
 
 // ── Score calculator (mirrors server-side logic) ─────────────────────────────
-const calcScore = (values: { storeName: string; ownerName: string; addressRaw: string; lga: string; description: string; website: string }, hasCoords: boolean) => {
+const calcScore = (values: { storeName: string; ownerInfo: string; addressRaw: string; lga: string; description: string; website: string }, hasCoords: boolean) => {
     let total = 0;
     if (values.storeName) total += 15;
     total += 10; // phone already verified
-    if (values.ownerName) total += 10;
+    if (values.ownerInfo) total += 10;
     total += 10; // category already selected upstream
     if (values.addressRaw && values.lga) total += 15;
     if (values.description) total += 10;
@@ -309,7 +309,7 @@ export default function ProfileSetup() {
 
     const handleSubmit = async (values: {
         storeName: string;
-        ownerName: string;
+        ownerInfo: string;
         addressRaw: string;
         lga: string;
         description: string;
@@ -320,7 +320,7 @@ export default function ProfileSetup() {
 
         const payload: RegisterStorePayload = {
             storeName: values.storeName,
-            ownerName: values.ownerName,
+            ownerInfo: values.ownerInfo,
             // category is the first item in categories JSON; server stores it on the account
             category: categories || {},
             address: {
@@ -365,7 +365,7 @@ export default function ProfileSetup() {
                     validationSchema={ProfileSchema}
                     initialValues={{
                         storeName: "",
-                        ownerName: "",
+                        ownerInfo: "",
                         addressRaw: "",
                         lga: "",
                         description: "",
@@ -414,10 +414,10 @@ export default function ProfileSetup() {
                                     <InputField
                                         label="Owner Name *"
                                         placeholder="Your full name"
-                                        value={values.ownerName}
-                                        onChangeText={handleChange("ownerName")}
-                                        onBlur={handleBlur("ownerName")}
-                                        error={touched.ownerName ? errors.ownerName : ""}
+                                        value={values.ownerInfo}
+                                        onChangeText={handleChange("ownerInfo")}
+                                        onBlur={handleBlur("ownerInfo")}
+                                        error={touched.ownerInfo ? errors.ownerInfo : ""}
                                     />
 
                                     <InputField

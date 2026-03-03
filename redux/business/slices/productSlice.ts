@@ -8,7 +8,7 @@ export const productApi = createApi({
     endpoints: (builder) => ({
         uploadProduct: builder.mutation<ApiResponse, saveProducts>({
             query: (payload) => ({
-                url: "/store/product/new",
+                url: "/stores/product",
                 method: "POST",
                 data: payload,
             }),
@@ -16,7 +16,7 @@ export const productApi = createApi({
 
         updateProduct: builder.mutation<ApiResponse, saveProducts>({
             query: (payload) => ({
-                url: "/store/product/edit",
+                url: "/stores/product/edit",
                 method: "POST",
                 data: payload,
             }),
@@ -24,7 +24,7 @@ export const productApi = createApi({
 
         updateProductStatus: builder.mutation<ApiResponse, any>({
             query: (payload) => ({
-                url: "/store/product/status",
+                url: "/stores/product/status",
                 method: "PUT",
                 data: payload,
             }),
@@ -33,7 +33,7 @@ export const productApi = createApi({
         // Password endpoints
         getStoreProducts: builder.query<ApiResponse, { category?: string }>({
             query: (params) => ({
-                url: "/store/get-products",
+                url: "/stores/products",
                 method: "GET",
                 params,
             }),
@@ -41,7 +41,7 @@ export const productApi = createApi({
 
         getOneProducts: builder.query<ApiResponse, { id: string }>({
             query: ({ id }) => ({
-                url: "/store/get-one-product/" + id,
+                url: "/stores/get-one-product/" + id,
                 method: "GET",
             }),
         }),
@@ -49,7 +49,7 @@ export const productApi = createApi({
         // number of products, categories and sub categorues
         getStoreFilesCount: builder.query<ApiResponse, void>({
             query: () => ({
-                url: "/store/files-count",
+                url: "/stores/files-count",
                 method: "GET",
             }),
         }),

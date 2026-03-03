@@ -74,7 +74,7 @@ const navigateToErrorPage = async (errorType: ErrorType) => {
         case ErrorType.AUTH_ERROR:
             // Clear auth data and
             await AsyncStorage.multiRemove(["store_token", "refresh_token"]);
-            router.push("/business/auth/Login");
+            router.push("/broken?errorType=auth");
             break;
 
         default:
@@ -250,7 +250,7 @@ export const axiosBaseQuery =
                 });
                 const { type, message } = res.data || {};
                 if (type === "success" && message !== "success") {
-                    toaster({ type, message });
+                    // toaster({ type, message });
                 }
                 return res;
             };

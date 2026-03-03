@@ -1,7 +1,7 @@
 import Button from "@/components/form/Button";
 import StoreWrapper from "@/components/wrapper/business";
 import { useStoreData } from "@/hooks/useData";
-import { useUpdateStoreInfoMutation } from "@/redux/business/slices/branchSlice";
+import { useUpdateStoreProfileMutation } from "@/redux/business/slices/storeInfoSlice";
 import { useState } from "react";
 import { Alert, RefreshControl, SafeAreaView, ScrollView, Text, View } from "react-native";
 import { DaySelector, TimePicker } from "./components";
@@ -25,20 +25,19 @@ export interface Days {
 
 
 export default function Availability() {
-    const [updateStore, { isLoading }] = useUpdateStoreInfoMutation()
+    const [updateStore, { isLoading }] = useUpdateStoreProfileMutation()
     const { storeInfo = {}, refetchStore, storeIsLoading } = useStoreData();
-    const { profile = {}, business } = storeInfo;
-    const { opening_hours = {} } = profile;
-    const [availability, setAvailability] = useState<Days>(opening_hours);
+    const { openingHours } = storeInfo.store || {};
+    const [availability, setAvailability] = useState<Days>(openingHours);
 
-    console.log(opening_hours)
+    console.log(openingHours)
 
     const handleToggleDay = (day: keyof Days) => {
         setAvailability(prev => ({
             ...prev,
             [day]: {
                 ...prev[day],
-                isset: !prev[day].isset
+                isset: !prev[day]?.isset
             }
         }));
     };
@@ -100,7 +99,7 @@ export default function Availability() {
             }
         }
 
-        updateStore({ opening_hours: availability }).then(() => refetchStore())
+        updateStore({ openingHours: availability }).then(() => refetchStore())
 
         // Log the final availability object
         console.log('Final availability:', availability);
@@ -164,7 +163,7 @@ export default function Availability() {
                                         <TimePicker
                                             key={`opening-${day}`}
                                             label={dayLabels[day]}
-                                            time={availability[day].from}
+                                            time={availability[day]?.from || '00:00'}
                                             onTimeChange={(time) => handleTimeChange(day, 'from', time)}
                                             disabled={!availability[day].isset}
                                         />
@@ -183,7 +182,7 @@ export default function Availability() {
                                         <TimePicker
                                             key={`closing-${day}`}
                                             label={dayLabels[day]}
-                                            time={availability[day].to}
+                                            time={availability[day].to || '00:00'}
                                             onTimeChange={(time) => handleTimeChange(day, 'to', time)}
                                             disabled={!availability[day].isset}
                                         />

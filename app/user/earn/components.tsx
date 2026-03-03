@@ -3,7 +3,7 @@ import { Dropdown } from "@/components/dropdown";
 import Button from "@/components/form/Button";
 import NoRecord from "@/components/noRecord";
 import { banksInNigeria } from "@/data/banks";
-import { useGetPaymentAccountQuery, useSavePaymentAccountMutation } from "@/redux/user/slices/userSlice";
+import { useGetPaymentAccountQuery, useSavePaymentAccountMutation } from "@/redux/user/slices/userSlice2";
 import { formatDateToMonthShort } from "@/utils/format";
 import { CircleCheck, Clock10 } from "lucide-react-native";
 import { useEffect, useState } from "react";

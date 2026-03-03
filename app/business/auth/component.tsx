@@ -8,6 +8,7 @@ import { Image, TextInput, TouchableOpacity, useColorScheme, View } from 'react-
 import { normalisePhone } from '@/utils/format';
 import { Route, router } from 'expo-router';
 import { Text } from 'react-native';
+import { ActivityIndicator } from "react-native";
 
 interface PageHeaderProps {
     title: string;
@@ -49,16 +50,16 @@ export function PageHeader({ title, subtitle, hasImage }: PageHeaderProps) {
 };
 
 // Profile Picture Upload Component
-export const ProfilePictureUpload = ({ handleUpload, localFiles = [] }: any) => {
+export const ProfilePictureUpload = ({ handleUpload, localFiles = [], image, isUploading }: any) => {
     console.log("localFiles=>>>>>>>", localFiles[-1])
     return (
         <View className="items-center mb-8">
             <View className="relative">
                 <View className="w-32 h-32 rounded-full bg-gray-200 dark:bg-gray-700 items-center justify-center overflow-hidden">
-                    {localFiles.length ? (
+                    {localFiles.length || image ? (
                         <Image
                             source={{
-                                uri: localFiles[localFiles.length - 1]
+                                uri: localFiles[localFiles.length - 1] || image
                             }}
                             className="w-full h-full"
                         />
@@ -76,7 +77,7 @@ export const ProfilePictureUpload = ({ handleUpload, localFiles = [] }: any) => 
                     onPress={() => handleUpload(1)}
                     className="absolute -bottom-1 -right-1 w-10 h-10 bg-blue-600 rounded-full items-center justify-center border-4 border-white dark:border-black"
                 >
-                    <Ionicons name="camera" size={20} color="white" />
+                    {isUploading ? <ActivityIndicator /> : <Ionicons name="camera" size={20} color="white" />}
                 </TouchableOpacity>
             </View>
         </View>
@@ -133,7 +134,7 @@ export const ProfileGuidelines = () => {
 
 
 export const PhoneNumber = ({pathname, data}:{pathname: Route, data?:any}) => {
-    const passData = data ? data : {};
+    const { categories, ...passData } = data ? data : {};
     const [phone, setPhone] = useState(""); // raw digit string, e.g. "08012345678"
     const [error, setError] = useState("");
     const inputRef = useRef<TextInput>(null);
@@ -167,7 +168,7 @@ export const PhoneNumber = ({pathname, data}:{pathname: Route, data?:any}) => {
         try {
             // POST /stores/auth/send-otp → { phoneNumber }
             // Response: { success, data: { phoneNumber, message, otp? } }
-            await sendOtp({ phoneNumber }).then((res) => {
+            await sendOtp({ phoneNumber, category: JSON.parse(categories || "{}") }).then((res) => {
                 console.log({res});
                 router.push({
                     pathname: (pathname || "/business/auth/files/PhoneVerify") as any,

@@ -48,13 +48,13 @@ export function DaySelector({ availability, onToggleDay }: DaySelectorProps) {
                     <TouchableOpacity
                         key={day.key}
                         onPress={() => onToggleDay(day.key)}
-                        className={`px-4 py-2 rounded-full border ${availability[day.key].isset
+                        className={`px-4 py-2 rounded-full border ${availability[day.key]?.isset
                             ? 'bg-yellow-400 border-yellow-400'
                             : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700'
                             }`}
                     >
                         <Text
-                            className={`text-sm font-medium ${availability[day.key].isset
+                            className={`text-sm font-medium ${availability[day.key]?.isset
                                 ? 'text-black'
                                 : 'text-gray-700 dark:text-gray-300'
                                 }`}

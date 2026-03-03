@@ -1,7 +1,7 @@
 import CustomizeStatus from "@/components/chips/customizedStatus";
 import { SearchBox2 } from "@/components/form/SearchBox";
 import HomeWrapper from "@/components/wrapper/user";
-import { useGetDiscoverMoreQuery, useGetUserSearchesQuery } from "@/redux/user/slices/userSlice";
+import { useGetDiscoverMoreQuery, useGetUserSearchesQuery } from "@/redux/user/slices/userSlice2";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";

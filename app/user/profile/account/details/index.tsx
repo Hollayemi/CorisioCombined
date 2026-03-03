@@ -2,7 +2,7 @@ import Button from "@/components/form/Button";
 import HomeWrapper from "@/components/wrapper/user";
 import { useUserData } from "@/hooks/useData";
 import useImageUploader from "@/hooks/useImageUploader";
-import { useUpdateUserAccountMutation } from "@/redux/user/slices/userSlice";
+import { useUpdateUserAccountMutation } from "@/redux/user/slices/userSlice2";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";

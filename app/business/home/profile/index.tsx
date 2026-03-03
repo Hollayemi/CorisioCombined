@@ -32,7 +32,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ title, items }) => {
                 {items.map((item, index) => (
                     <TouchableOpacity
                         key={item.id}
-
+                        activeOpacity={1}
                         //@ts-ignore
                         onPress={() => router.push({ pathname: item.to, params: { data: JSON.stringify(item.parameters || {}) } })}
                         className={`flex-row items-center justify-between p-4 ${index !== items.length - 1 ? 'border-b border-gray-100 dark:border-gray-700' : ''
@@ -50,7 +50,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ title, items }) => {
 };
 
 const ProfileHomeScreen: React.FC = () => {
-    const { staffInfo, storeInfo }: any = useStoreData();
+    const { storeInfo }: any = useStoreData();
     const dispatch = useDispatch()
     const isDark = useColorScheme() === 'dark'
     const [logoutModal, showLogoutModal] = useState<boolean>(false)
@@ -62,6 +62,8 @@ const ProfileHomeScreen: React.FC = () => {
         showLogoutModal(true)
     };
 
+    const myStoreInfo = storeInfo?.store || {}
+
     return (
         <StoreWrapper noHeader active="profile">
             <View style={{ height: insets.bottom }} className="bg-white dark:bg-gray-900 !pb-10" />
@@ -71,15 +73,15 @@ const ProfileHomeScreen: React.FC = () => {
                         <View className="w-14 h-14 bg-black rounded-full items-center justify-center mr-4">
                             <Image
                                 className="w-full h-full rounded-full"
-                                source={!storeInfo?.profile?.profile_image ? require("@/assets/images/blank-profile.png") : { uri: storeInfo?.profile?.profile_image }}
+                                source={!myStoreInfo?.profile_image ? require("@/assets/images/blank-profile.png") : { uri: myStoreInfo?.profile_image }}
                             />
                         </View>
                         <View className="flex-1">
                             <Text className="text-2xl font-bold text-gray-900 dark:text-white">
-                                {storeInfo?.business?.businessName}
+                                {myStoreInfo?.storeName}
                             </Text>
                             <Text className="text-sm text-gray-500 dark:text-gray-400">
-                                {storeInfo.profile.address}
+                                {`${myStoreInfo?.address?.raw}, ${myStoreInfo?.address?.state}.` || "No address provided"}
                             </Text>
                         </View>
                     </View>

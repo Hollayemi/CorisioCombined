@@ -338,7 +338,7 @@ These screens are only shown to stores that have not yet reached `verified` stat
 
 **Required fields (marked with *):**
 - Store Name * (`storeName`) — max 100 characters
-- Owner Name * (`ownerName`) — max 80 characters
+- Owner Name * (`ownerInfo`) — max 80 characters
 - Category * (`category`) — dropdown from categories list
 - Street / address * (`address.raw`) — free text
 - LGA * (`address.lga`) — dropdown of Abuja LGAs (Abaji, Abuja Municipal, Bwari, Gwagwalada, Kuje, Kwali)

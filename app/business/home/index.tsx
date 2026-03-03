@@ -2,18 +2,18 @@ import StoreWrapper from '@/components/wrapper/business';
 import { useStoreData } from '@/hooks/useData';
 import {
     useGetMyStoreAnalyticsQuery,
-    useGetMyStoreQuery,
-    useGetProfileCompletionQuery,
+    useGetProfileCompletionQuery
 } from '@/redux/business/slices/storeInfoSlice';
 
+import { useGetMyReferralsQuery, useGetReferralStatsQuery } from '@/redux/business/slices/referralSlice';
 import { formatPrice } from '@/utils/format';
 import { router } from 'expo-router';
 import {
     ChevronDown,
     CircleCheck,
     CircleDashed,
-    EyeClosed,
     Eye,
+    EyeClosed,
     Inbox,
     MousePointerClick,
     Search,
@@ -33,8 +33,7 @@ import {
     View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import ReferralScreen, { ShareReferral } from './homeComponent/referral';
-import { useGetMyReferralsQuery, useGetReferralStatsQuery } from '@/redux/business/slices/referralSlice';
+import ReferralScreen, { ShareReferral, summaryPills } from './homeComponent/referral';
 
 // ─── Boost level colours ──────────────────────────────────────────────────────
 const BOOST_COLORS: Record<string, { bg: string; text: string; label: string }> = {
@@ -384,15 +383,15 @@ const Homepage = () => {
                     <View className="flex-row items-center">
                         <Image
                             source={
-                                myStore.picture
-                                    ? { uri: myStore.picture }
+                                myStore.profile_image
+                                    ? { uri: myStore.profile_image }
                                     : require('@/assets/images/blank-profile.png')
                             }
                             className="w-12 h-12 mr-4 rounded-full"
                         />
                         <View>
                             <Text className="text-gray-600 dark:text-gray-300 text-[16px]">
-                                Hi, {myStore.ownerName}
+                                Hi, {myStore.ownerInfo?.name}
                             </Text>
                             <View className="flex-row items-center mt-2">
                                 <Store size={15} color={iconDarkColor} />
@@ -438,6 +437,7 @@ const Homepage = () => {
                     {tabs.map((tab) => (
                         <TouchableOpacity
                             key={tab}
+                            activeOpacity={1}
                             onPress={() => setActiveTab(tab)}
                             className={`flex-1 py-3 z-50 rounded-full ${activeTab === tab ? 'bg-yellow-500' : 'bg-transparent'
                                 }`}
@@ -471,16 +471,12 @@ const Homepage = () => {
                             {/* Live summary strip — visible as soon as the query resolves */}
                             {refSummary && (
                                 <View className="flex-row gap-2 flex-wrap">
-                                    {([
-                                        { key: 'total', label: 'Total', bg: 'bg-gray-200 dark:bg-gray-700', txt: 'text-gray-700 dark:text-gray-200' },
-                                        { key: 'validated', label: 'Validated', bg: 'bg-green-100 dark:bg-green-900/30', txt: 'text-green-700 dark:text-green-300' },
-                                        { key: 'pending', label: 'Pending', bg: 'bg-yellow-100 dark:bg-yellow-900/30', txt: 'text-yellow-700 dark:text-yellow-300' },
-                                    ] as const).map(({ key, label, bg, txt }) => (
+                                    {summaryPills.map(({ key, label, bg, text }) => (
                                         <View key={key} className={`flex-row items-center px-3 py-1.5 rounded-full ${bg}`}>
-                                            <Text className={`text-sm font-bold mr-1 ${txt}`}>
+                                            <Text className={`text-sm font-bold mr-1 ${text}`}>
                                                 {refSummary[key]}
                                             </Text>
-                                            <Text className={`text-sm ${txt}`}>{label}</Text>
+                                            <Text className={`text-sm ${text}`}>{label}</Text>
                                         </View>
                                     ))}
 

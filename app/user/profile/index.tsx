@@ -5,7 +5,7 @@ import HomeWrapper from "@/components/wrapper/user";
 import { useColorScheme } from "@/hooks/useColorScheme.web";
 import { useUserData } from "@/hooks/useData";
 import { logoutUser } from "@/redux/user/slices/authSlice";
-import { useUpdateUserAccountMutation } from "@/redux/user/slices/userSlice";
+import { useUpdateUserAccountMutation } from "@/redux/user/slices/userSlice2";
 import { AntDesign } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useDispatch } from "react-redux";

@@ -16,11 +16,20 @@ export interface StoreAddress {
     };
 }
 
+export interface UploadImageRequest {
+    image: string;
+    state: "add";
+    type: "gallery" | "store_image" | "staff_image",
+}
+
 export interface OpeningHourEntry {
-    day: 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' | 'Sun';
-    open: string;   // "08:00"
-    close: string;  // "20:00"
-    isClosed: boolean;
+    monday: { isset: boolean; from: string; to: string };
+    tuesday: { isset: boolean; from: string; to: string };
+    wednesday: { isset: boolean; from: string; to: string };
+    thursday: { isset: boolean; from: string; to: string };
+    friday: { isset: boolean; from: string; to: string };
+    saturday: { isset: boolean; from: string; to: string };
+    sunday: { isset: boolean; from: string; to: string };
 }
 
 export interface StoreBoost {
@@ -31,10 +40,16 @@ export interface StoreBoost {
     source?: string;
 }
 
+export interface UpdateStoreUserProfilePayload {
+    name?: string;
+    email?: string;
+    phoneNumber?: string;
+}
+
 export interface StoreProfile {
     id: string;
     storeName: string;
-    ownerName: string;
+    ownerInfo: string;
     phoneNumber: string;
     category: {
         _id: string;
@@ -43,7 +58,7 @@ export interface StoreProfile {
     address: StoreAddress;
     description?: string;
     website?: string;
-    openingHours?: OpeningHourEntry[];
+    openingHours?: any;
     onboardingStatus: 'phone_verified' | 'registered' | 'profile_complete' | 'verified' | 'rejected';
     rejectionReason?: string;
     isPhoneVerified: boolean;
@@ -56,8 +71,8 @@ export interface StoreProfile {
 
 export interface RegisterStorePayload {
     storeName: string;
-    ownerName: string;
-    category: string;           // ObjectId
+    ownerInfo: string;
+    category: string; // ObjectId
     address: StoreAddress;
     referralCode?: string;
     description?: string;
@@ -67,10 +82,10 @@ export interface RegisterStorePayload {
 
 export interface UpdateStoreProfilePayload {
     storeName?: string;
-    ownerName?: string;
+    ownerInfo?: string;
     description?: string;
     website?: string;
-    openingHours?: OpeningHourEntry[];
+    openingHours?: any;
     address?: Partial<StoreAddress>;
 }
 
@@ -154,6 +169,21 @@ export const storeInfoApi = createApi({
             invalidatesTags: ['StoreInfo', 'Completion'],
         }),
 
+        // ── PUT /users/me ─────────────────
+        // Update display name, email, or address
+        updateStoreOwnerProfile: builder.mutation<
+            ApiResponse<{ store: StoreProfile }>,
+            UpdateStoreUserProfilePayload
+            >({
+            query: (payload) => ({
+                url: '/stores/owner/complete-profile',
+                method: 'PUT',
+                data: payload,
+            }),
+            invalidatesTags: ['StoreInfo'],
+        }),
+
+
         // ── GET /stores/profile/completion ──────────────────────────────────
         // Profile completion score + checklist breakdown
         getProfileCompletion: builder.query<ApiResponse<ProfileCompletion>, void>({
@@ -166,7 +196,7 @@ export const storeInfoApi = createApi({
 
         // ── POST /stores/upload-photo ───────────────────────────────────────
         // Upload a store photo (multipart or base64 depending on server)
-        uploadStorePhoto: builder.mutation<ApiResponse<{ photoUrl: string }>, FormData>({
+        uploadStorePhoto: builder.mutation<ApiResponse<any>, UploadImageRequest>({
             query: (formData) => ({
                 url: '/stores/upload-photo',
                 method: 'POST',
@@ -185,6 +215,15 @@ export const storeInfoApi = createApi({
             }),
             providesTags: ['Analytics'],
         }),
+
+        updateUserProfilePic: builder.mutation<ApiResponse<any>, UploadImageRequest>({
+            query: (data) => ({
+                url: '/stores/owner-photo',
+                method: 'POST',
+                data,
+            }),
+            invalidatesTags: ['StoreInfo'],
+        }),
     }),
 });
 
@@ -200,4 +239,6 @@ export const {
     useRegisterStoreMutation,
     useUpdateStoreProfileMutation,
     useUploadStorePhotoMutation,
+    useUpdateUserProfilePicMutation,
+    useUpdateStoreOwnerProfileMutation,
 } = storeInfoApi;

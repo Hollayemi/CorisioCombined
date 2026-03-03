@@ -1,18 +1,20 @@
 // screens/PersonalInformationScreen.tsx
+import { ProfilePictureUpload } from '@/app/business/auth/component';
 import Button from '@/components/form/Button';
 import StoreWrapper from '@/components/wrapper/business';
 import { useStoreData } from '@/hooks/useData';
-import useImageUploader from '@/hooks/useImageUploader';
-import { useUpdateStoreInfoMutation } from '@/redux/business/slices/branchSlice';
+import useImageUploader from '@/hooks/useStoreImageUploader';
+import { useUpdateStoreProfileMutation } from '@/redux/business/slices/storeInfoSlice';
 import { ImagePlusIcon, User } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { ActivityIndicator, Image, KeyboardAvoidingView, Platform, RefreshControl, ScrollView, Text, TextInput, TouchableOpacity, useColorScheme, View } from 'react-native';
 
 interface personalInfo {
-    businessName: string;
-    phone: string;
+    storeName: string;
+    phoneNumber: string;
     email: string;
-    about_store: string;
+    description: string;
+    website: string;
 }
 
 const InfoField: React.FC<{ label: string; value: string; field: keyof personalInfo; multiline?: boolean, setpersonalInfo: any, isEditing: boolean }> = ({
@@ -31,7 +33,7 @@ const InfoField: React.FC<{ label: string; value: string; field: keyof personalI
             <TextInput
                 value={value}
                 onChangeText={(text) => setpersonalInfo((prev: any) => ({ ...prev, [field]: text }))}
-                className={`bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 text-gray-900 dark:text-white ${multiline ? 'h-60 !min-h-[80px]' : ''
+                className={`bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg p-3 text-gray-900 dark:text-white ${multiline ? 'h-60 !min-h-[80px]' : ''
                     }`}
                 multiline={multiline}
                 textAlignVertical={multiline ? 'top' : 'center'}
@@ -47,35 +49,41 @@ const InfoField: React.FC<{ label: string; value: string; field: keyof personalI
 );
 
 const PersonalInformationScreen: React.FC = () => {
-    const { staffInfo, storeInfo, refetchStaff, staffIsLoading }: any = useStoreData();
+    const { storeInfo, refetchStore, storeIsLoading }: any = useStoreData();
     const [profileImage, setProfileImage] = useState([]);
-    const { handleUpload, localFiles, uploading } = useImageUploader("staff_image", setProfileImage)
-    const [updateStoreInfo, { isLoading }] = useUpdateStoreInfoMutation()
-    const { businessName, profile_image, about_store, phone, email } = storeInfo.profile || {};
+    const { handleUpload, localFiles, uploading } = useImageUploader("store_image", setProfileImage)
+    const [updateStoreInfo, { isLoading }] = useUpdateStoreProfileMutation()
+    const { storeName, profile_image, description, phoneNumber, email, website } = storeInfo.store || {};
     const [personalInfo, setpersonalInfo] = useState<personalInfo>({
-        businessName: businessName || '',
-        phone: phone || '',
+        storeName: storeName || '',
+        phoneNumber: phoneNumber || '',
         email: email || '',
-        about_store: about_store || ''
+        description: description || '',
+        website: website || '',
     });
     const [isEditing, setIsEditing] = useState(false);
     const handleSave = () => {
-        updateStoreInfo(personalInfo).then(() => refetchStaff())
+        updateStoreInfo(personalInfo).then(() => refetchStore())
         setIsEditing(false);
     };
     const isDark = useColorScheme() === 'dark'
 
     return (
-        <StoreWrapper headerTitle="Personal Information" active='profile'>
+        <StoreWrapper headerTitle="Store Information" active='profile'>
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 className="flex-1"
             >
-                <ScrollView showsVerticalScrollIndicator={false} refreshControl={<RefreshControl refreshing={staffIsLoading} onRefresh={refetchStaff} />} className="flex-1 bg-gray-50 dark:bg-gray-900">
+                <ScrollView showsVerticalScrollIndicator={false} refreshControl={<RefreshControl refreshing={storeIsLoading} onRefresh={refetchStore} />} className="flex-1 bg-gray-50 dark:bg-gray-900">
                     <View className="p-4">
                         {/* Profile Picture Section */}
-                        <View className="flex-row items-center mb-8">
-
+                        <ProfilePictureUpload
+                            localFiles={localFiles}
+                            image={profile_image}
+                            isUploading={uploading}
+                            handleUpload={handleUpload}
+                        />
+                        {/* <View className="flex-row items-center mb-8">
                             <View className="relative">
                                 <View className={`w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-700 items-center justify-center overflow-hidden`}>
                                     {profile_image || profileImage.length ? (
@@ -104,22 +112,22 @@ const PersonalInformationScreen: React.FC = () => {
                                         </Text>
                                     </> : <ActivityIndicator />}
                             </TouchableOpacity>
-                        </View>
+                        </View> */}
 
                         {/* Business Information Form */}
-                        <View className="bg-white dark:bg-gray-800 rounded-lg p-4 mb-6">
+                        <View className="bg-white dark:bg-gray-900 rounded-lg p-4 mb-6">
                             <InfoField
                                 label="Your Name"
-                                value={personalInfo.businessName}
-                                field="businessName"
+                                value={personalInfo.storeName}
+                                field="storeName"
                                 setpersonalInfo={setpersonalInfo}
                                 isEditing={isEditing}
                             />
 
                             <InfoField
                                 label="Business Phone Number"
-                                value={personalInfo.phone}
-                                field="phone"
+                                value={personalInfo.phoneNumber}
+                                field="phoneNumber"
                                 setpersonalInfo={setpersonalInfo}
                                 isEditing={isEditing}
                             />
@@ -131,11 +139,18 @@ const PersonalInformationScreen: React.FC = () => {
                                 setpersonalInfo={setpersonalInfo}
                                 isEditing={isEditing}
                             />
+                            <InfoField
+                                label="Website URL"
+                                value={personalInfo.website}
+                                field="website"
+                                setpersonalInfo={setpersonalInfo}
+                                isEditing={isEditing}
+                            />
 
                             <InfoField
                                 label="About Store"
-                                value={personalInfo.about_store}
-                                field="about_store"
+                                value={personalInfo.description}
+                                field="description"
                                 multiline
                                 setpersonalInfo={setpersonalInfo}
                                 isEditing={isEditing}

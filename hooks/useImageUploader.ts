@@ -1,12 +1,12 @@
 import toaster from "@/config/toaster";
-import { useUpdateProfilePictureMutation } from "@/redux/user/slices/userSlice";
+import { useUpdateProfilePictureMutation } from "@/redux/user/slices/userSlice2";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 import { useUserData } from "./useData";
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB in bytes
 
-type ImageUploadType = "gallery" | "profile_image";
+type ImageUploadType = "gallery" | "profile_image" | 'staff_image';
 
 export default function useImageUploader() {
     const [files, setFiles] = useState<string[]>([]);

@@ -1,19 +1,18 @@
 import toaster from "@/config/toaster";
-import { useUploadStorePictureMutation } from "@/redux/business/slices/branchSlice";
-import { useUpdateProfilePicMutation } from "@/redux/business/slices/staffSlice";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 import { useStoreData } from "./useData";
+import { useUpdateUserProfilePicMutation, useUploadStorePhotoMutation } from "@/redux/business/slices/storeInfoSlice";
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB in bytes
 
 type ImageUploadType = "gallery" | "store_image" | "staff_image";
 
 export default function useImageUploader(image_type: ImageUploadType, setLocalFiles2?: any,) {
-    const { refetchStaff } = useStoreData()
+    const { refetchStore } = useStoreData()
     const [files, setFiles] = useState<string[]>([]);
     const [localFiles, setLocalFiles] = useState<string[]>([]);
-    const [imageUploader, { isLoading }] = image_type === "staff_image" ? useUpdateProfilePicMutation() : useUploadStorePictureMutation();
+    const [imageUploader, { isLoading }] = image_type === "staff_image" ? useUpdateUserProfilePicMutation() : useUploadStorePhotoMutation();
 
     const handleUpload = async (max: number) => {
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -44,7 +43,7 @@ export default function useImageUploader(image_type: ImageUploadType, setLocalFi
                         image: dataUri,
                         state: "add",
                         type: image_type,
-                    }).then(() => refetchStaff())
+                    }).then(() => refetchStore())
                     setLocalFiles((prev: any) => [...prev, imageUri]);
                     setFiles((prev: any) => [...prev, dataUri]);
                 }

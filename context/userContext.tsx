@@ -2,7 +2,7 @@
 import { useGetMyCartQuery } from "@/redux/user/slices/cartSlice";
 import { useGetFollowingStoresQuery } from "@/redux/user/slices/followSlice";
 import { useGetSavedItemsQuery } from "@/redux/user/slices/saveItemSlice";
-import { useGetUserAccountQuery, useGetUserNotificationsQuery } from "@/redux/user/slices/userSlice";
+import { useGetUserAccountQuery, useGetUserNotificationsQuery } from "@/redux/user/slices/userSlice2";
 import { createContext, useEffect, useState } from "react";
 import { Alert } from "react-native";
 

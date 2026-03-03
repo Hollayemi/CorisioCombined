@@ -30,7 +30,6 @@ export default function SetUpProfilePictureScreen() {
                         <ProfilePictureUpload
                             localFiles={localFiles}
                             handleUpload={handleUpload}
-
                         />
                     </View>
                 </View>
