@@ -4,7 +4,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
-
 export default function CategorySpecification({
     onSpecChange,
     keys = [],
@@ -74,8 +73,11 @@ export default function CategorySpecification({
 
             <TouchableOpacity
                 onPress={handleAddSpec}
-                className="py-4 border border-[#e6e6e9] dark:border-gray-700 rounded-lg mb-4 mt-2"
+                activeOpacity={0.7}
+                className="flex-row items-center justify-center border border-[#e6e6e9] dark:border-gray-700 rounded-lg mb-4 mt-2 py-3"
             >
+                {/* className="py-4 border border-[#e6e6e9] dark:border-gray-700 rounded-lg mb-4 mt-2"
+            > */}
                 <Text className="dark:text-white  text-center">
                     Add Specification
                 </Text>
@@ -91,7 +93,7 @@ export default function CategorySpecification({
                             <Text onPress={() => { setNewSpecKey(key); setCurrentValue(value) }} className={`font-medium text-base text-gray-700 dark:text-gray-300 `}>
                                 {key}: {value}
                             </Text>
-                            <TouchableOpacity onPress={() => removeSpec(key)}>
+                            <TouchableOpacity activeOpacity={0.7} onPress={() => removeSpec(key)}>
                                 <Ionicons
                                     name="trash"
                                     size={18}

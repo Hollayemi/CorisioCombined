@@ -27,9 +27,10 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import CategorySpecification from "./components";
 
-const deliveryOptions = [
-    { label: "Pickup", value: "pickup" },
-    { label: "Way-billing", value: "waybilling" },
+const conditionOptions = [
+    { label: "New", value: "new" },
+    { label: "Used", value: "used" },
+    { label: "Refurbished", value: "refurbished" },
 ];
 
 export default function CreateProductScreen() {
@@ -42,9 +43,11 @@ export default function CreateProductScreen() {
     const [errors, setErrors] = useState<Record<string, string>>({});
     const scrollRef = useRef<ScrollView>(null);
 
-    const { data: cates, isLoading: cateLoading } =
+    const { data: cates, isLoading: cateLoading, refetch: refetchCate } =
         useGetFeaturedCategoriesQuery("true");
     const categories = cates ? cates?.data : [];
+
+    console.log({ categories })
 
     // Use the custom hook with all handlers
     const {
@@ -63,7 +66,7 @@ export default function CreateProductScreen() {
         handleChangeCategory,
         handleSubCateSelection,
         handleProductGroupSelection,
-        deliveryHandler,
+        conditionHandler,
         handleImageUpload: hookImageUpload,
         removeImage,
         reset,
@@ -108,14 +111,14 @@ export default function CreateProductScreen() {
     const validateFormWithErrors = (): boolean => {
         const newErrors: Record<string, string> = {};
 
-        if (!formData.prodName.trim()) {
-            newErrors.prodName = "Product name is required";
+        if (!formData.label.trim()) {
+            newErrors.label = "Product name is required";
         }
 
-        if (!formData.prodPrice.trim()) {
-            newErrors.prodPrice = "Price is required";
-        } else if (isNaN(Number(formData.prodPrice))) {
-            newErrors.prodPrice = "Price must be a valid number";
+        if (!formData.price.trim()) {
+            newErrors.price = "Price is required";
+        } else if (isNaN(Number(formData.price))) {
+            newErrors.price = "Price must be a valid number";
         }
 
         if (!formData.category) {
@@ -126,18 +129,18 @@ export default function CreateProductScreen() {
             newErrors.subcategory = "Subcategory is required";
         }
 
-        if (!formData.totInStock.trim()) {
-            newErrors.totInStock = "Stock quantity is required";
-        } else if (isNaN(Number(formData.totInStock))) {
-            newErrors.totInStock = "Stock must be a valid number";
+        if (!formData.totalInStock.trim()) {
+            newErrors.totalInStock = "Stock quantity is required";
+        } else if (isNaN(Number(formData.totalInStock))) {
+            newErrors.totalInStock = "Stock must be a valid number";
         }
 
         if (formData.images.length === 0) {
             newErrors.images = "At least one product image is required";
         }
 
-        if (formData.delivery.length === 0) {
-            newErrors.delivery = "At least one delivery option is required";
+        if (formData.condition.length === 0) {
+            newErrors.condition = "At least one condition option is required";
         }
 
         setErrors(newErrors);
@@ -193,16 +196,16 @@ export default function CreateProductScreen() {
         }));
     }
 
-    // Convert delivery array to format expected by dropdown
-    const getSelectedDeliveryOptions = () => {
-        return formData.delivery;
+    // Convert condition array to format expected by dropdown
+    const getSelectedConditionOptions = () => {
+        return formData.condition;
     };
     const isLoading = cateLoading || uploading || loading || (id ? gettingToEdit : false);
     let emptyImageSelector = id && formData.images.length !== 0 ? 4 - formData.images.length : 4
     if (emptyImageSelector < 0) emptyImageSelector = 0
     return (
         <StoreWrapper
-            headerTitle={id ? `Update ${formData.prodName}` : "Add New Product"}
+            headerTitle={id ? `Update ${formData.label}` : "Add New Product"}
             hasFooter={false}
         >
 
@@ -212,7 +215,7 @@ export default function CreateProductScreen() {
                     className="flex-1"
                 >
                     <ScrollView
-                        refreshControl={<RefreshControl refreshing={isLoading} onRefresh={refetch} />}
+                        refreshControl={<RefreshControl refreshing={isLoading} onRefresh={id ? () => {} : refetchCate} />}
                         ref={scrollRef}
                         contentContainerStyle={styles.container}
                         keyboardShouldPersistTaps="handled"
@@ -303,20 +306,20 @@ export default function CreateProductScreen() {
                         <InputField
                             label="Product Name"
                             placeholder="Product Name *"
-                            value={formData.prodName}
-                            error={errors.prodName}
+                            value={formData.label}
+                            error={errors.label}
                             onChangeText={(text: any) =>
-                                handleTextChange("prodName", text)
+                                handleTextChange("label", text)
                             }
                             className="mb-0"
                         />
                         <InputField
                             label="Price"
                             placeholder="Price *"
-                            value={formData.prodPrice}
-                            error={errors.prodPrice}
+                            value={formData.price}
+                            error={errors.price}
                             onChangeText={(text: any) =>
-                                handleNumericChange("prodPrice", text)
+                                handleNumericChange("price", text)
                             }
                             keyboardType="numeric"
                             className="mt-3"
@@ -324,10 +327,10 @@ export default function CreateProductScreen() {
                         <InputField
                             label="Total in stock"
                             placeholder="Quantity in Stock *"
-                            value={formData.totInStock}
-                            error={errors.totInStock}
+                            value={formData.totalInStock}
+                            error={errors.totalInStock}
                             onChangeText={(text: any) =>
-                                handleNumericChange("totInStock", text)
+                                handleNumericChange("totalInStock", text)
                             }
                             keyboardType="numeric"
                             className="mt-2"
@@ -335,9 +338,14 @@ export default function CreateProductScreen() {
 
 
                         {/* Category Options */}
-                        <Text className="text-[14px] font-bold text-gray-700 dark:text-gray-300 mb-2 mt-5">
-                            Category Options
-                        </Text>
+                        <View className="flex-row justify-between items-center">
+                            <Text className="text-[14px] font-bold text-gray-700 dark:text-gray-300 mb-2 mt-5">
+                                Category Options
+                            </Text>
+                            <TouchableOpacity onPress={refetchCate}>
+                                <Ionicons name="add" size={20} color={cateLoading ? "gray" : "gray"} />
+                            </TouchableOpacity>
+                        </View>
 
                         <Dropdown
                             options={categories.map((cat: any) => ({
@@ -397,6 +405,7 @@ export default function CreateProductScreen() {
                                 const group = getProductGroupOptions().find(
                                     (g) => g._id === selectedValue
                                 );
+                                console.log({ group })
                                 if (group) {
                                     handleProductGroupSelection(group);
                                 }
@@ -431,33 +440,33 @@ export default function CreateProductScreen() {
                             />
                         )}
 
-                        {/* Delivery Options */}
+                        {/* Condition Options */}
                         <Text className="text-[14px] font-bold text-gray-700 dark:text-gray-300 mb-2 mt-5">
-                            Delivery Options *
+                            Condition Options *
                         </Text>
                         <Dropdown
-                            options={deliveryOptions}
-                            selected={getSelectedDeliveryOptions()}
+                            options={conditionOptions}
+                            selected={[formData.condition]} // This should be an array of selected values
                             onSelect={(selected) => {
                                 if (Array.isArray(selected)) {
                                     setFormData((prev) => ({
                                         ...prev,
-                                        delivery: selected,
+                                        condition: selected[0], // Get first value for single select
                                     }));
                                 } else {
-                                    deliveryHandler(selected);
+                                    conditionHandler(selected);
                                 }
                             }}
                             className=""
-                            placeholder="Select delivery methods *"
+                            placeholder="Select condition methods *"
                             multiple
                         />
-                        {errors.delivery && (
+                        {errors.condition && (
                             <Text
 
                                 className="!text-red-500 mb-2"
                             >
-                                {errors.delivery}
+                                {errors.condition}
                             </Text>
                         )}
 
@@ -466,9 +475,9 @@ export default function CreateProductScreen() {
                             <InputField
                                 label="Description"
                                 placeholder="Product Description"
-                                value={formData.prodInfo}
+                                value={formData.description}
                                 onChangeText={(text: any) =>
-                                    handleTextChange("prodInfo", text)
+                                    handleTextChange("description", text)
                                 }
                                 multiline={true}
                                 className="mt-3 !mb-10 !p-0"

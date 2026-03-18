@@ -8,7 +8,7 @@ export const productApi = createApi({
     endpoints: (builder) => ({
         uploadProduct: builder.mutation<ApiResponse, saveProducts>({
             query: (payload) => ({
-                url: "/stores/product",
+                url: "/stores/products/new",
                 method: "POST",
                 data: payload,
             }),
@@ -24,8 +24,8 @@ export const productApi = createApi({
 
         updateProductStatus: builder.mutation<ApiResponse, any>({
             query: (payload) => ({
-                url: "/stores/product/status",
-                method: "PUT",
+                url: `/stores/products/${payload.id}/availability`,
+                method: "PATCH",
                 data: payload,
             }),
         }),
@@ -41,7 +41,7 @@ export const productApi = createApi({
 
         getOneProducts: builder.query<ApiResponse, { id: string }>({
             query: ({ id }) => ({
-                url: "/stores/get-one-product/" + id,
+                url: "/stores/products/" + id,
                 method: "GET",
             }),
         }),
@@ -57,7 +57,6 @@ export const productApi = createApi({
 });
 
 
-// Export hooks for usage in components
 export const {
     useUploadProductMutation,
     useUpdateProductMutation,
@@ -77,21 +76,20 @@ interface ApiResponse {
     to?: string;
 }
 
-
 interface saveProducts {
-    prodName: string;
-    prodPrice: string;
+    label: string;
+    price: string;
     prodKey: string;
-    prodInfo: string;
+    description: string;
     specifications: { sizes?: any[] };
     images: any[];
     newImages: any[];
-    totInStock: string;
+    totalInStock: string;
     subCollectionName: string;
     collectionName: string;
     category: string;
     subcategory: string;
     productGroup: string;
-    delivery: string[];
+    condition: string;
     _id?: string;
 }

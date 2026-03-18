@@ -10,20 +10,20 @@ interface ProductSpecifications {
 
 // Type for the product form data
 interface ProductFormData {
-    prodName: string;
-    prodPrice: string;
+    label: string;
+    price: string;
     prodKey: string;
-    prodInfo: string;
+    description: string;
     specifications: ProductSpecifications;
     images: string[];
     newImages: string[];
-    totInStock: string;
+    totalInStock: string;
     subCollectionName: string;
     collectionName: string;
     category: string;
     subcategory: string;
     productGroup: string;
-    delivery: string[];
+    condition: string;
     video?: string;
     collectionId?: string;
     subCollection?: string;
@@ -57,21 +57,21 @@ interface GenPayload {
 }
 
 interface ProductToEdit {
-    prodName: string;
-    prodPrice: string;
+    label: string;
+    price: string;
     video?: string;
     prodKey: string;
-    prodInfo: string;
+    description: string;
     images: string[];
     newImages: string[];
-    totInStock: string;
+    totalInStock: string;
     collectionId: string;
     subCollection: string;
     subCollectionName: string;
     collectionName: string;
     subcategory: string;
     productGroup: string;
-    delivery: string[];
+    condition: string;
     specifications?: {
         variations?: Record<string, any>;
     };
@@ -91,7 +91,7 @@ const removeOrAddToArray = <T>(value: T, array: T[], setter: (newArray: T[]) => 
 };
 
 // Custom hook for product form management
-const useProductForm = (categories: Category[] = [], dataToEdit?: { data?: {} }) => {
+const useProductForm = (categories: Category[] = [], dataToEdit?: { data?: { product?: ProductToEdit } }) => {
     const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
     const [newSpecKey, setNewSpecKey] = useState<string>("");
     const [specValue, setSpecValue] = useState<string>("");
@@ -100,29 +100,29 @@ const useProductForm = (categories: Category[] = [], dataToEdit?: { data?: {} })
     const [files, setFiles] = useState<any[]>([]);
     const [fromCollection, setFromCollection] = useState<Category | null>(null);
     const [localFiles, setLocalFiles] = useState<any[]>([]);
-    const [delivery, selectDelivery] = useState<string[]>(["pickup"]);
+    const [condition, selectCondition] = useState<string>("new");
     const [genPayload, getGenPayload] = useState<GenPayload | null>(null);
     const [descLoading, setDescLoading] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
 
     const [formData, setFormData] = useState<ProductFormData>({
-        prodName: "",
-        prodPrice: "",
+        label: "",
+        price: "",
         prodKey: "",
-        prodInfo: "",
+        description: "",
         specifications: { sizes: selectedSizes },
         images: [],
         newImages: [],
-        totInStock: "",
+        totalInStock: "",
         subCollectionName: "",
         collectionName: "",
         category: "",
         subcategory: "",
         productGroup: "",
-        delivery,
+        condition,
     });
 
-    const prodToEdit = (dataToEdit?.data ?? {}) as ProductToEdit;
+    const prodToEdit = (dataToEdit?.data?.product ?? {}) as any;
 
     useEffect(() => {
         setFromCollection(categories.filter((x) => x._id === formData.category)[0] || null);
@@ -131,20 +131,20 @@ const useProductForm = (categories: Category[] = [], dataToEdit?: { data?: {} })
 
     const reset = (): void => {
         setFormData({
-            prodName: "",
-            prodPrice: "",
+            label: "",
+            price: "",
             prodKey: "",
-            prodInfo: "",
+            description: "",
             specifications: { sizes: [] },
             images: [],
             newImages: [],
-            totInStock: "",
+            totalInStock: "",
             subCollectionName: "",
             collectionName: "",
             category: "",
             subcategory: "",
             productGroup: "",
-            delivery: ["pickup"],
+            condition: "new",
         });
         setFiles([]);
         setLocalFiles([]);
@@ -157,34 +157,34 @@ const useProductForm = (categories: Category[] = [], dataToEdit?: { data?: {} })
     useEffect(() => {
         if (dataToEdit) {
             setFormData({
-                prodName: prodToEdit.prodName || "",
-                prodPrice: prodToEdit.prodPrice?.toString() || "",
+                label: prodToEdit.label || "",
+                price: prodToEdit.price?.toString() || "",
                 video: prodToEdit.video,
                 prodKey: prodToEdit.prodKey || "",
-                prodInfo: prodToEdit.prodInfo || "",
+                description: prodToEdit.description || "",
 
                 images: prodToEdit.images || [],
                 newImages: [],
-                totInStock: prodToEdit.totInStock?.toString() || "",
+                totalInStock: prodToEdit.totalInStock?.toString() || "",
                 collectionId: prodToEdit.collectionId,
                 subCollection: prodToEdit.subCollection,
 
                 subCollectionName: prodToEdit.subCollectionName || "",
                 collectionName: prodToEdit.collectionName || "",
-                subcategory: prodToEdit.subcategory || "",
-                productGroup: prodToEdit.productGroup || "",
-                delivery: prodToEdit.delivery || ["pickup"],
+                subcategory: prodToEdit.subcategory?.id || "",
+                productGroup: prodToEdit.productGroup?.id || "",
+                condition: prodToEdit.condition || "new",
 
                 specifications: prodToEdit.specifications || {},
-                category: prodToEdit.category || "",
+                category: prodToEdit.category?.id || "",
                 _id: prodToEdit._id,
             });
 
-            selectDelivery(prodToEdit.delivery || ["pickup"]);
+            selectCondition(prodToEdit.condition || "new");
             setProdSpecs(prodToEdit.specifications || {});
-            setFromCollection(categories.filter((x) => x._id === prodToEdit.category)[0] || null);
-            fromCollection?.sub_category.map((sub: any) => sub._id === prodToEdit.subcategory && setGroups(sub.groups || []));
-            productGroups.map((group) => group._id === prodToEdit.productGroup && setProdSpecs(group.spec || ""));
+            setFromCollection(categories.filter((x) => x._id === prodToEdit.category?.id)[0] || null);
+            fromCollection?.sub_category.map((sub: any) => sub._id === prodToEdit.subcategory?.id && setGroups(sub.groups || []));
+            productGroups.map((group) => group._id === prodToEdit.productGroup?.id && setProdSpecs(group.spec || ""));
         }
     }, [formData.category, dataToEdit, prodToEdit, categories, fromCollection?.sub_category, productGroups]);
 
@@ -217,14 +217,12 @@ const useProductForm = (categories: Category[] = [], dataToEdit?: { data?: {} })
         setFormData((prev) => ({ ...prev, [prop]: numericValue }));
     };
 
-    // Delivery handler
-    const deliveryHandler = (value: string): void => {
-        removeOrAddToArray(value, delivery, selectDelivery);
+    // Condition handler
+    const conditionHandler = (value: string): void => {
+        selectCondition(value);
         setFormData((prev) => ({
             ...prev,
-            delivery: delivery.includes(value)
-                ? delivery.filter((d) => d !== value)
-                : [...delivery, value],
+            condition: value,
         }));
     };
 
@@ -346,12 +344,12 @@ const useProductForm = (categories: Category[] = [], dataToEdit?: { data?: {} })
     // Form validation
     const validateForm = (): boolean => {
         const requiredFields: (keyof ProductFormData)[] = [
-            "prodName",
-            "prodPrice",
-            "prodInfo",
+            "label",
+            "price",
+            "description",
             "category",
             "subcategory",
-            "totInStock",
+            "totalInStock",
         ];
 
         return requiredFields.every((field) => {
@@ -370,7 +368,7 @@ const useProductForm = (categories: Category[] = [], dataToEdit?: { data?: {} })
         productGroups,
         files,
         localFiles,
-        delivery,
+        condition,
         genPayload,
         descLoading,
         loading,
@@ -385,7 +383,7 @@ const useProductForm = (categories: Category[] = [], dataToEdit?: { data?: {} })
         setGroups,
         setFiles,
         setLocalFiles,
-        selectDelivery,
+        selectCondition,
         getGenPayload,
         setDescLoading,
         setLoading,
@@ -394,7 +392,7 @@ const useProductForm = (categories: Category[] = [], dataToEdit?: { data?: {} })
         handleChange,
         handleTextChange,
         handleNumericChange,
-        deliveryHandler,
+        conditionHandler,
         handleChangeCategory,
         handleSubCateSelection,
         handleProductGroupSelection,
